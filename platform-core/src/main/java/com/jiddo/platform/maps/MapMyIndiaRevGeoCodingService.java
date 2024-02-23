@@ -1,0 +1,72 @@
+package com.jiddo.platform.maps;
+
+import java.text.MessageFormat;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.jiddo.platform.PlatformConstants;
+import com.jiddo.platform.exception.ApplicationException;
+import com.jiddo.platform.exception.PlatformExceptionCodes;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@AllArgsConstructor
+@Service(value = PlatformConstants.MAP_MY_INDIA_SERVICE_REV_GEOCODE_SERVICE)
+public class MapMyIndiaRevGeoCodingService implements RevGeoCodingService {
+
+	private MapMyIndiaConfig config;
+
+	private RestTemplate template;
+
+	private ObjectMapper mapper;
+
+	public RevGeoCodeAddressDTO getAddress(Double lat, Double lon) throws ApplicationException {
+		String url = MessageFormat.format(
+				"https://apis.mapmyindia.com/advancedmaps/v1/{0}/rev_geocode?lat={1}&lng={2}&region=IND",
+				config.getSecretKey(), String.valueOf(lat), String.valueOf(lon));
+		try {
+			ResponseEntity<JsonNode> response = template.getForEntity(url, JsonNode.class);
+			log.info("response : {}", response.getBody());
+			JsonNode node = response.getBody();
+			if (node.has("results")) {
+				JsonNode results = node.get("results");
+				if (results.isArray()) {
+					for (JsonNode result : (ArrayNode) results) {
+						RevGeoCodeAddressDTO address = mapper.convertValue(result, RevGeoCodeAddressDTO.class);
+						if (ObjectUtils.isEmpty(address.getCity())) {
+							// if city is empty we consider city as district
+							String district = result.get("subDistrict").asText();
+							address.setCity(district);
+						}
+						return address;
+					}
+				}
+			}
+			throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(), "No location found");
+		} catch (Exception e) {
+			throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(),
+					"Unable to fetch the city from coordinates");
+		}
+
+	}
+
+	@Override
+	public RevGeoCodeAddressDTO getAddressIgnoreError(Double lat, Double lon) {
+		try {
+			return getAddress(lat, lon);
+		} catch (Exception e) {
+			log.error("error occured while fetching the message", e);
+			return null;
+		}
+
+	}
+
+}

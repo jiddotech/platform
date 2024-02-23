@@ -1,0 +1,5 @@
+package com.jiddo.platform.enums;
+
+public enum HostTypeEnum {
+	PREMISE_OWNER, NETWORK_BUYER_IP, INVESTMENT_PLATFORM, NETWORK_BUYER_WITH_WHITELABEL_APP_IP, DEALER;
+}
