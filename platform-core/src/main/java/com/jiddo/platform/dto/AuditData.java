@@ -18,11 +18,13 @@ public class AuditData implements Serializable {
 	private Instant updatedAt;
 	private Instant createdAt;
 
-	public AuditData(String createdBy) {
-		this.updatedBy = createdBy;
-		this.updatedAt = Instant.now();
-		this.createdAt = Instant.now();
-		this.createdBy = createdBy;
+	public static AuditData createdBy(String createdBy) {
+		AuditData data = new AuditData();
+		data.updatedBy = createdBy;
+		data.updatedAt = Instant.now();
+		data.createdAt = Instant.now();
+		data.createdBy = createdBy;
+		return data;
 	}
 
 	public void setUpdatedBy(String updatedBy) {
