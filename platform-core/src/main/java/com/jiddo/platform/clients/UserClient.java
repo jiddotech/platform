@@ -1,10 +1,8 @@
 package com.jiddo.platform.clients;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,8 +21,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiddo.platform.PlatformConstants;
-import com.jiddo.platform.dto.GroupDTO;
-import com.jiddo.platform.dto.HostDetails;
 import com.jiddo.platform.dto.UserDetails;
 import com.jiddo.platform.exception.ApplicationException;
 import com.jiddo.platform.exception.PlatformExceptionCodes;
@@ -171,7 +167,7 @@ public class UserClient {
 		}
 	}
 
-	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber, String chargePointOperatorId) {
+	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
 		}
@@ -182,7 +178,6 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		GetOrCreateUserRequest request = new GetOrCreateUserRequest();
 		request.setMobile(mobileNumber);
-		request.setChargePointOperatorId(chargePointOperatorId);
 		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(request, headers);
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user", urlConfig.getBaseUrl());
@@ -207,112 +202,6 @@ public class UserClient {
 	@Data
 	public static class GetOrCreateUserRequest {
 		private String mobile;
-		private String chargePointOperatorId;
-	}
-
-	public List<GroupDTO> getUserGroups(String userId) {
-		if (ObjectUtils.isEmpty(userId)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
-		}
-		log.debug("fetchig userId :{}", userId);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user/{1}/groups",
-					urlConfig.getBaseUrl(), userId);
-			log.debug("request: {}, headers {}", url, entity);
-			ResponseEntity<GroupDTO[]> response = template.exchange(url, HttpMethod.GET, entity, GroupDTO[].class);
-			List<GroupDTO> list = Arrays.asList(response.getBody());
-			log.info("api response : {}", list);
-			return list;
-		} catch (HttpStatusCodeException exeption) {
-			if (commonService.is404Error(exeption.getResponseBodyAsString())) {
-				return null;
-			}
-			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
-		}
-	}
-
-	public HostDetails getHostDetails(String mobileNumber) {
-		if (ObjectUtils.isEmpty(mobileNumber)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
-		}
-		log.debug("fetching: {}", mobileNumber);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/host/mobileNumber/{1}",
-					urlConfig.getBaseUrl(), mobileNumber);
-			log.debug("request: {}, headers {}", url, entity);
-			ResponseEntity<HostDetails> response = template.exchange(url, HttpMethod.GET, entity, HostDetails.class);
-			log.info("api response : {}", response.getBody());
-			return response.getBody();
-		} catch (HttpStatusCodeException exception) {
-			if (commonService.is404Error(exception.getResponseBodyAsString())) {
-				return null;
-			}
-			log.error("error response from the server :{}", exception.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
-		}
-	}
-
-	public UserGetOrCreateResponse getOrCreatePremiseOwner(String mobileNumber, String chargePointOperatorId) {
-		if (ObjectUtils.isEmpty(mobileNumber)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid mobileNumber");
-		}
-		log.debug("fetching or creating: {}", mobileNumber);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		GetOrCreateUserRequest request = new GetOrCreateUserRequest();
-		request.setMobile(mobileNumber);
-		request.setChargePointOperatorId(chargePointOperatorId);
-		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(request, headers);
-		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/host", urlConfig.getBaseUrl());
-			log.debug("request: {} body and headers {}", url, entity);
-			ResponseEntity<UserGetOrCreateResponse> response = template.exchange(url, HttpMethod.POST, entity,
-					UserGetOrCreateResponse.class);
-			return response.getBody();
-		} catch (HttpStatusCodeException exeption) {
-			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
-		}
-	}
-
-	public UserDetails[] getAllChargePointOperatorUsers(String chargePointOperatorId) {
-		if (ObjectUtils.isEmpty(chargePointOperatorId)) {
-			return new UserDetails[0];
-		}
-		log.debug("fetching all cms users :{}", chargePointOperatorId);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/chargePointOperator/{1}/user",
-					urlConfig.getBaseUrl(), chargePointOperatorId);
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
-			ResponseEntity<UserDetails[]> response = template.exchange(url, HttpMethod.GET, entity,
-					UserDetails[].class);
-			return response.getBody();
-		} catch (HttpStatusCodeException exeption) {
-			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
-		}
 	}
 
 }
