@@ -3,9 +3,11 @@ package com.jiddo.platform.dto;
 import java.io.Serializable;
 import java.time.Instant;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
 public class AuditData implements Serializable {
 	/**
 	 * 
