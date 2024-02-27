@@ -22,49 +22,19 @@ public class GenericNotificationService {
 
 	private GenericRabbitQueueConfiguration rabbitQueueConfiguration;
 
-	public void sendSMS(String mobile, Map<String, String> data, String templates,
-			String chargePointOperatorId) {
-		sendSMS(91, mobile, data, templates, chargePointOperatorId);
+	public void sendWhatsapp(String mobile, Map<String, String> data, String templates) {
+		sendWhatsapp(91, mobile, data, Arrays.asList(templates));
 	}
 
-	public void sendSMS(int countryCode, String mobile, Map<String, String> data, String templates,
-			String chargePointOperatorId) {
-		sendSMS(countryCode, mobile, data, Arrays.asList(templates), chargePointOperatorId);
+	public void sendWhatsapp(int countryCode, String mobile, Map<String, String> data, String templates) {
+		sendWhatsapp(countryCode, mobile, data, Arrays.asList(templates));
 	}
 
-	public void sendSMS(int countryCode, String mobile, Map<String, String> data, List<String> templates,
-			String chargePointOperatorId) {
-		NotificationDTO notificationDTO = new NotificationDTO();
-		notificationDTO.setId(UUID.randomUUID().toString());
-		notificationDTO.setType(NotificationType.GENERIC_NOTIFICATION);
-		notificationDTO.setChannel(Channel.SMS);
-		notificationDTO.setChargePointOperatorId(chargePointOperatorId);
-		SMSNotificationTo smsNotificationTo = new SMSNotificationTo();
-		smsNotificationTo.setMobileNumber(mobile);
-		smsNotificationTo.setCountryCode(countryCode);
-		notificationDTO.setTo(smsNotificationTo);
-		notificationDTO.setTemplates(templates);
-		notificationDTO.setData(data);
-		sendNotification(notificationDTO);
-	}
-
-	public void sendWhatsapp(String mobile, Map<String, String> data, String templates,
-			String chargePointOperatorId) {
-		sendWhatsapp(91, mobile, data, Arrays.asList(templates), chargePointOperatorId);
-	}
-
-	public void sendWhatsapp(int countryCode, String mobile, Map<String, String> data, String templates,
-			String chargePointOperatorId) {
-		sendWhatsapp(countryCode, mobile, data, Arrays.asList(templates), chargePointOperatorId);
-	}
-
-	public void sendWhatsapp(int countryCode, String mobile, Map<String, String> data, List<String> templates,
-			String chargePointOperatorId) {
+	public void sendWhatsapp(int countryCode, String mobile, Map<String, String> data, List<String> templates) {
 		NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(UUID.randomUUID().toString());
 		notificationDTO.setType(NotificationType.GENERIC_NOTIFICATION);
 		notificationDTO.setChannel(Channel.WHATSAPP);
-		notificationDTO.setChargePointOperatorId(chargePointOperatorId);
 		WhatsappNotificationTo smsNotificationTo = new WhatsappNotificationTo();
 		smsNotificationTo.setPhone(mobile);
 		smsNotificationTo.setCountryCode(countryCode);
