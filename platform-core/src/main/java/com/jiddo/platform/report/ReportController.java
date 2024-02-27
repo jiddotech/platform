@@ -74,22 +74,6 @@ public class ReportController {
 		private StepSizeType stepSize;
 	}
 
-	@GetMapping("/cms/{key}")
-	public Page<ReportSingleRowDTO> getDashBoardCardDTOForCMS(@PathVariable("key") String key,
-			@RequestParam("from") long fromEpochSecond, @RequestParam("to") long toEpochSecond,
-			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
-		Instant from = Instant.ofEpochSecond(fromEpochSecond);
-		Instant to = Instant.ofEpochSecond(toEpochSecond);
-		Range<Instant> range = new Range<Instant>(from, to);
-		CMSReportRequest request = new CMSReportRequest();
-		request.setRange(range);
-		request.setStepSize(stepSize);
-		UserDTO user = SecurityUtils.getLoggedInUser();
-		request.setKey(key);
-		request.setChargePointOperatorId(user.getChargePointOperatorId());
-		return filterService.getDashBoardCardDTO(request, page);
-	}
-
 	@Data
 	public static class CMSReportRequest implements IFetchReportRequest {
 		private String key;

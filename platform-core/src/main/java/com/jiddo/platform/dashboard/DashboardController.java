@@ -46,21 +46,6 @@ public class DashboardController {
 		private String key;
 	}
 
-	@GetMapping("/secure/dashboard/cms/{key}")
-	public DashboardCardDTO getDashBoardCardDTOForCMS(@PathVariable("key") String key) {
-		UserDTO user = SecurityUtils.getLoggedInUser();
-		CMSDashboardRequest request = new CMSDashboardRequest();
-		request.setKey(key);
-		request.setChargePointOperatorId(user.getChargePointOperatorId());
-		return filterService.getDashBoardCardDTO(request);
-	}
-
-	@Data
-	public static class CMSDashboardRequest implements IFetchDashboardRequest {
-		private String key;
-		private String chargePointOperatorId;
-	}
-
 	@GetMapping("/secure/dashboard/group/{groupId}/{key}")
 	public DashboardCardDTO getDashBoardCardDTOForUserGroup(@PathVariable("key") String key,
 			@PathVariable("groupId") String groupId) {

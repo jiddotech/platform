@@ -34,13 +34,5 @@ public interface UserDTO {
 		}
 	}
 
-	public default void validateCZOAccess() {
-		if (BooleanUtils.isFalse(isLogInFrom(LogInFrom.CZO))) {
-			throw new ValidationException(PlatformExceptionCodes.ACCESS_DENIED.getCode(), "Does not have CZO access");
-		}
-	}
-
-	public String getChargePointOperatorId();
-
 	public OperatingSystem getOperatingSystem();
 }
