@@ -423,4 +423,5 @@ public final class CommonUtility {
 		return new Range<Instant>(ZonedDateTime.of(min, now.getZone()).toInstant(),
 				ZonedDateTime.of(max, now.getZone()).toInstant());
 	}
+
 }

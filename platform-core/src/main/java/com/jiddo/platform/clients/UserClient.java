@@ -74,7 +74,7 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		HttpEntity<Set<String>> entity = new HttpEntity<>(mobileNumbers, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user/mobileNumber",
+			String url = MessageFormat.format("{0}/user-service/secure/internal-call/user/mobileNumber",
 					urlConfig.getBaseUrl());
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);

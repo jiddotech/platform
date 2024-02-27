@@ -1,5 +1,6 @@
 package com.jiddo.platform.utility;
 
+import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.StringUtils;
@@ -11,6 +12,8 @@ import org.springframework.util.ObjectUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiddo.platform.PlatformConstants;
+import com.jiddo.platform.clients.UrlConfig;
+import com.jiddo.platform.enums.ServiceContainerEnum;
 import com.jiddo.platform.exception.ApplicationException;
 import com.jiddo.platform.exception.AuthenticationException;
 import com.jiddo.platform.exception.ErrorField;
@@ -28,6 +31,7 @@ public final class PlatformCommonService {
 
 	private ObjectMapper mapper;
 	private RedissonClient redissonClient;
+	private UrlConfig urlConfig;
 
 	public ErrorField parseError(String errorResponse) {
 		try {
@@ -110,6 +114,11 @@ public final class PlatformCommonService {
 			log.error("error occured while writing obj to json:{}", obj);
 			return null;
 		}
+	}
+
+	public String getInternalCallUrl(ServiceContainerEnum container, String suffix) {
+		return MessageFormat.format("{0}/{1}/secure/internal-call/{2}", urlConfig.getBaseUrl(),
+				container.getServiceName(), suffix);
 	}
 
 }
