@@ -6,7 +6,7 @@ import java.time.Instant;
 import lombok.Data;
 
 @Data
-public class AuditDTO implements Serializable {
+public class AuditData implements Serializable {
 	/**
 	 * 
 	 */
@@ -16,7 +16,7 @@ public class AuditDTO implements Serializable {
 	private Instant updatedAt;
 	private Instant createdAt;
 
-	public AuditDTO(String createdBy) {
+	public AuditData(String createdBy) {
 		this.updatedBy = createdBy;
 		this.updatedAt = Instant.now();
 		this.createdAt = Instant.now();
