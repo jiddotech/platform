@@ -31,7 +31,6 @@ public class PlatformConstants {
 	public static final String SECURITY_CONFIG_PREFIX = APP_CONFIG_PREFIX + "security";
 	public static final String URL_CONFIG_PREFIX = APP_CONFIG_PREFIX + "url";
 	public static final String SSO_TOKEN_HEADER = "x-sso-token";
-	public static final String MAP_MY_INDIA_SERVICE_REV_GEOCODE_SERVICE = "mapMyIndiaRevGeoCodeService";
 	public static final String DEFAULT_ROLE_ID = "DEFAULT_ROLE";
 	public static final String CODE_404 = PlatformExceptionCodes.NOT_FOUND.getCode();
 	public static final String REDIS_TEMPLATE_FOR_UNIQUE_NUMBERS = "redisUniqueTemplate";

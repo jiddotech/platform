@@ -1,10 +1,5 @@
 package com.jiddo.platform.utility;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.StringUtils;
@@ -16,7 +11,6 @@ import org.springframework.util.ObjectUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiddo.platform.PlatformConstants;
-import com.jiddo.platform.dto.Range;
 import com.jiddo.platform.exception.ApplicationException;
 import com.jiddo.platform.exception.AuthenticationException;
 import com.jiddo.platform.exception.ErrorField;

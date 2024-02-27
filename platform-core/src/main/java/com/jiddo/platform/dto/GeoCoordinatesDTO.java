@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class GeoCoordinatesDTO implements Serializable, AddressData {
+public class GeoCoordinatesDTO implements Serializable {
 
 	/**
 	 * 

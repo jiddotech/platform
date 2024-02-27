@@ -56,32 +56,6 @@ public class UserClient {
 		return null;
 	}
 
-	public String getFCMToken(String userId) {
-		if (ObjectUtils.isEmpty(userId)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
-		}
-		log.debug("fetchig userId :{}", userId);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/firebase-token/user/{1}",
-					urlConfig.getBaseUrl(), userId);
-			log.debug("request: {}, headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
-			return response.getBody().get("token").asText();
-		} catch (HttpStatusCodeException exeption) {
-			if (commonService.is404Error(exeption.getResponseBodyAsString())) {
-				return null;
-			}
-			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
-		}
-	}
-
 	public UserDetails getUserByMobileNumber(String mobileNumber) {
 		Set<String> mobileNumberSet = new HashSet<>();
 		mobileNumberSet.add(mobileNumber);

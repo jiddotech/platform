@@ -27,21 +27,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.PropertyPlaceholderHelper;
 
 import com.jiddo.platform.PlatformConstants;
-import com.jiddo.platform.dto.AddressDTOV2;
-import com.jiddo.platform.dto.AddressData;
 import com.jiddo.platform.dto.CodeValueDTO;
 import com.jiddo.platform.dto.GeoCoordinatesDTO;
-import com.jiddo.platform.dto.HybridAddressDTO;
 import com.jiddo.platform.dto.Image;
-import com.jiddo.platform.dto.PostalAddress;
 import com.jiddo.platform.dto.Range;
 import com.jiddo.platform.dto.SaveTagRequest;
-import com.jiddo.platform.enums.ChargerType;
 import com.jiddo.platform.exception.ApplicationException;
 import com.jiddo.platform.exception.PlatformExceptionCodes;
 import com.jiddo.platform.exception.ValidationException;
@@ -125,77 +119,6 @@ public final class CommonUtility {
 			return null;
 		}
 		return new Range<Long>(Long.parseLong(arr[0]), Long.parseLong(arr[1]));
-	}
-
-	public static Criteria chargerControlIdCriteria(String chargerTypeKeyPath, String pathOfConfiguration,
-			String chargerControlId) {
-		return chargerControlIdCriteria(chargerTypeKeyPath, pathOfConfiguration, chargerControlId, true);
-	}
-
-	public static Criteria chargerControlIdCriteria(String chargerTypeKeyPath, String pathOfConfiguration,
-			String chargerControlId, boolean regexEnabled) {
-		Criteria criteria = new Criteria();
-		List<Criteria> list = new ArrayList<>();
-		for (ChargerType val : ChargerType.values()) {
-			Criteria inCriteria = new Criteria();
-			Criteria valCriteria = null;
-			switch (val) {
-			case KIRANA_CHARZER_BLE:
-			case FLEXTRON_BLE_OMNI:
-				if (regexEnabled) {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).regex(chargerControlId,
-							"i");
-				} else {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).is(chargerControlId);
-				}
-				break;
-			case KIRANA_CHARZER_FLEXTRON:
-			case KIRANA_CHARZER_FLEXTRON_WIFI:
-				if (regexEnabled) {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).regex(chargerControlId, "i");
-				} else {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).is(chargerControlId);
-				}
-				break;
-			case KIRANA_CHARZER_GSM:
-			case EV_POINT_CHARGER:
-				if (regexEnabled) {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).regex(chargerControlId, "i");
-				} else {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).is(chargerControlId);
-				}
-				break;
-			case CHARGE_MOD_BHARAT_AC:
-			case MEKR_OMNI:
-			case MOKO_PLUG_OMNI:
-				if (regexEnabled) {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).regex(chargerControlId,
-							"i");
-				} else {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).is(chargerControlId);
-				}
-				break;
-			case OCPP_16_JSON_CHARGER:
-				if (regexEnabled) {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).regex(chargerControlId,
-							"i");
-				} else {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).is(chargerControlId);
-				}
-				break;
-			case OTHER_NETWORK_CHARGER:
-				break;
-			default:
-				break;
-			}
-			if (!ObjectUtils.isEmpty(valCriteria)) {
-				Criteria chargerType = Criteria.where(chargerTypeKeyPath).is(val.name());
-				list.add(inCriteria.andOperator(chargerType, valCriteria));
-			}
-		}
-		Criteria[] array = list.toArray(new Criteria[list.size()]);
-		criteria.orOperator(array);
-		return criteria;
 	}
 
 	public static List<CodeValueDTO<String, String>> getRecentTimeFilterValues() {
@@ -282,65 +205,6 @@ public final class CommonUtility {
 			return new Image();
 		}
 		return images.get(0);
-	}
-
-	public static void validateAddress(AddressDTOV2 address) {
-
-		if (ObjectUtils.isEmpty(address)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid address");
-		}
-		if (ObjectUtils.isEmpty(address.getType())) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid address.type");
-		}
-		if (ObjectUtils.isEmpty(address.getData())) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid address.data");
-		}
-		switch (address.getType()) {
-		case GPS_COORDINATES:
-			validateGeoCoordinates(address.getData());
-			break;
-		case POSTAL_ADDRESS:
-			validatePostalAddress(address.getData());
-			break;
-		case HYBRID_ADDRESS:
-			validateHybridAddress(address.getData());
-			break;
-
-		default:
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid addressType");
-		}
-
-	}
-
-	private static void validateHybridAddress(AddressData data) {
-		HybridAddressDTO address = (HybridAddressDTO) data;
-		validateGeoCoordinates(address.getCoordinates());
-		if (ObjectUtils.isEmpty(address.getPostalAddress())) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.postalAddress");
-		}
-		if (ObjectUtils.isEmpty(address.getPinCode())) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.pinCode");
-		}
-	}
-
-	private static void validatePostalAddress(AddressData data) {
-		PostalAddress address = (PostalAddress) data;
-		if (ObjectUtils.isEmpty(address.getPinCode())) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.pinCode");
-		}
-		if (ObjectUtils.isEmpty(address.getPostalAddress())) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.postalAddress");
-		}
-	}
-
-	private static void validateGeoCoordinates(AddressData addressData) {
-		GeoCoordinatesDTO coordinates = (GeoCoordinatesDTO) addressData;
-		if (ObjectUtils.isEmpty(coordinates.getLat())) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.lat");
-		}
-		if (ObjectUtils.isEmpty(coordinates.getLon())) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.lon");
-		}
 	}
 
 	public static String getDate(Instant instant) {
