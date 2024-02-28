@@ -118,7 +118,7 @@ public final class PlatformCommonService {
 
 	public String getInternalCallUrl(ServiceContainerEnum container, String suffix) {
 		return MessageFormat.format("{0}/{1}/secure/internal-call/{2}", urlConfig.getBaseUrl(),
-				container.getServiceName(), suffix);
+				container.getContextPath(), suffix);
 	}
 
 }
