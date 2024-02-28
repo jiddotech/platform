@@ -2,6 +2,7 @@ package com.jiddo.platform.filters;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 
@@ -10,6 +11,11 @@ public class InFilter<T> extends AbstractFilter {
 
 	public InFilter() {
 		super(null, FilterOperationsType.IN);
+	}
+
+	public InFilter(String field, Set<T> value) {
+		super(field, FilterOperationsType.IN);
+		this.value = new ArrayList<>(value);
 	}
 
 	public InFilter(String field, List<T> value) {
