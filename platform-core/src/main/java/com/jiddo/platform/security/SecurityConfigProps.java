@@ -10,6 +10,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 
 import com.jiddo.platform.PlatformConstants;
+import com.jiddo.platform.enums.ServiceContainerEnum;
 
 import lombok.Data;
 
@@ -21,6 +22,6 @@ public class SecurityConfigProps {
 
 	private String jwtSecretKey;
 	private List<String> testingRoles = new ArrayList<>();
-	private Map<String, String> creds = new HashMap<>();
+	private Map<ServiceContainerEnum, String> creds = new HashMap<>();
 
 }
