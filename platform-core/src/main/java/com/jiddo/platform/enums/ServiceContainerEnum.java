@@ -7,10 +7,11 @@ import lombok.Getter;
 @Getter
 public enum ServiceContainerEnum {
 
-	AUTH_SERVICE("auth"), BOOKING_SERVICE("session"), EMPLOYEE_SERVICE("employee"), TICKET_SERVICE("ticket"),
-	HARDWARE_SERVICE("hardware"), ASSET_SERVICE("asset"), GAME_SERVICE("game"), STORE_SERVICE("store"),
-	GAMER_SERVICE("gamer"), PROMOTION_SERVICE("promotion"), PAYMENT_SERVICE("payment"), COMMON_SERVICE("common"),
-	NOTIFICATION_SERVICE("notification"), UD_SERVICE("ud");
+	AUTH_SERVICE("auth-svc"), BOOKING_SERVICE("session-svc"), EMPLOYEE_SERVICE("employee-svc"),
+	TICKET_SERVICE("ticket"), HARDWARE_SERVICE("hardware-svc"), ASSET_SERVICE("asset-svc"), GAME_SERVICE("game-svc"),
+	STORE_SERVICE("store-svc"), GAMER_SERVICE("gamer-svc"), PROMOTION_SERVICE("promotion-svc"),
+	PAYMENT_SERVICE("payment-svc"), COMMON_SERVICE("common-svc"), NOTIFICATION_SERVICE("notification-svc"),
+	UD_SERVICE("ud-svc");
 
 	private String contextPath;
 
