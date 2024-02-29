@@ -18,7 +18,7 @@ public class GenerateTokenController {
 	private GenerateTokenService tokenService;
 
 	@PostMapping("${app.config.security.generateTokenUrl}")
-	@Secured("ROLE_GENERATE_SERVER_SIDE_TOKEN")
+//	@Secured("ROLE_GENERATE_SERVER_SIDE_TOKEN")
 	public GenerateTokenResponse generateJwtToken(@RequestBody GenerateTokenRequest request) {
 		return tokenService.generateToken(request);
 	}
