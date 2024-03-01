@@ -1,7 +1,6 @@
 package com.jiddo.platform.security;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -43,8 +42,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		try {
 			String clientToken = resolveAuthToken(httpServletRequest);
 			if (!ObjectUtils.isEmpty(clientToken)) {
-				Optional<String> chargePointOperatorId = resolveChargePointOperatorId(httpServletRequest);
-				Authentication auth = authService.getClientAuthentication(clientToken, chargePointOperatorId);
+				Authentication auth = authService.getClientAuthentication(clientToken);
 
 				SecurityContextImpl secureContext = new SecurityContextImpl();
 				secureContext.setAuthentication(auth);
@@ -91,14 +89,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			return bearerToken.substring(7);
 		}
 		return null;
-	}
-
-	public Optional<String> resolveChargePointOperatorId(HttpServletRequest req) {
-		String cpoId = req.getHeader("cpo-id");
-		if (ObjectUtils.isEmpty(cpoId)) {
-			return Optional.empty();
-		}
-		return Optional.of(cpoId);
 	}
 
 }

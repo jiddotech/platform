@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.jiddo.platform.PlatformConstants;
 import com.jiddo.platform.enums.LogInFrom;
-import com.jiddo.platform.enums.OperatingSystem;
 
 import lombok.Data;
 
@@ -17,8 +16,6 @@ class LoggedInUser implements UserDTO {
 	private List<RoleDTO> roles;
 	// this fields is equivalent to login from.
 	private LogInFrom logInFrom;
-	private String chargePointOperatorId;
-	private OperatingSystem operatingSystem;
 
 	@Override
 	public ZoneId getZoneId() {

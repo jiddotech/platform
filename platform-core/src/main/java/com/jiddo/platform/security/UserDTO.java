@@ -8,7 +8,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.jiddo.platform.enums.LogInFrom;
-import com.jiddo.platform.enums.OperatingSystem;
 import com.jiddo.platform.exception.PlatformExceptionCodes;
 import com.jiddo.platform.exception.ValidationException;
 
@@ -33,6 +32,4 @@ public interface UserDTO {
 			throw new ValidationException(PlatformExceptionCodes.ACCESS_DENIED.getCode(), message);
 		}
 	}
-
-	public OperatingSystem getOperatingSystem();
 }
