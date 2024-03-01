@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiddo.platform.PlatformConstants;
-import com.jiddo.platform.dto.EmployeeDetails;
+import com.jiddo.platform.dto.UserDetails;
 import com.jiddo.platform.exception.ApplicationException;
 import com.jiddo.platform.exception.PlatformExceptionCodes;
 import com.jiddo.platform.exception.ValidationException;
@@ -43,27 +43,27 @@ public class UserClient {
 	private PlatformCommonService commonService;
 	private ObjectMapper mapper;
 
-	public EmployeeDetails getUserById(String userId) {
+	public UserDetails getUserById(String userId) {
 		if (ObjectUtils.isEmpty(userId)) {
 			return null;
 		}
 		Set<String> mobileSet = new HashSet<>();
 		mobileSet.add(userId);
-		Map<String, EmployeeDetails> details = getUserById(mobileSet);
+		Map<String, UserDetails> details = getUserById(mobileSet);
 		if (details.containsKey(userId)) {
 			return details.get(userId);
 		}
 		return null;
 	}
 
-	public EmployeeDetails getUserByMobileNumber(String mobileNumber) {
+	public UserDetails getUserByMobileNumber(String mobileNumber) {
 		Set<String> mobileNumberSet = new HashSet<>();
 		mobileNumberSet.add(mobileNumber);
-		Map<String, EmployeeDetails> map = getUserByMobileNumber(mobileNumberSet);
+		Map<String, UserDetails> map = getUserByMobileNumber(mobileNumberSet);
 		return map.get(mobileNumber);
 	}
 
-	public Map<String, EmployeeDetails> getUserByMobileNumber(Set<String> mobileNumbers) {
+	public Map<String, UserDetails> getUserByMobileNumber(Set<String> mobileNumbers) {
 		if (ObjectUtils.isEmpty(mobileNumbers)) {
 			return Collections.emptyMap();
 		}
@@ -78,7 +78,7 @@ public class UserClient {
 					urlConfig.getBaseUrl());
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, EmployeeDetails>>() {
+			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
 			if (commonService.is404Error(exeption.getResponseBodyAsString())) {
@@ -91,7 +91,7 @@ public class UserClient {
 		}
 	}
 
-	public Map<String, EmployeeDetails> getUserById(Set<String> userIds) {
+	public Map<String, UserDetails> getUserById(Set<String> userIds) {
 		if (ObjectUtils.isEmpty(userIds)) {
 			return Collections.emptyMap();
 		}
@@ -106,7 +106,7 @@ public class UserClient {
 					urlConfig.getBaseUrl());
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, EmployeeDetails>>() {
+			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
 			if (commonService.is404Error(exeption.getResponseBodyAsString())) {
@@ -119,7 +119,7 @@ public class UserClient {
 
 	}
 
-	public EmployeeDetails[] getAllCZOUser() {
+	public UserDetails[] getAllCZOUser() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -131,8 +131,8 @@ public class UserClient {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 
 			log.debug("request: {} headers {}", url, entity);
-			ResponseEntity<EmployeeDetails[]> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
-					EmployeeDetails[].class);
+			ResponseEntity<UserDetails[]> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
+					UserDetails[].class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
