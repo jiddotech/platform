@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class AuditDTO {
-	private UserDetails createdBy;
-	private UserDetails updatedBy;
+	private EmployeeDetails createdBy;
+	private EmployeeDetails updatedBy;
 	private Instant createdAt;
 	private Instant updatedAt;
 }
