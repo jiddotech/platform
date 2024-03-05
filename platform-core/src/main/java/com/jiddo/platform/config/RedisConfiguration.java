@@ -20,7 +20,8 @@ public class RedisConfiguration {
 	public RedissonClient getRedisson() {
 		Config config = new Config();
 		String url = MessageFormat.format("redis://{0}:{1}", props.getHost(), String.valueOf(props.getPort()));
-		config.useSingleServer().setAddress(url).setDatabase(props.getDb());
+		config.useSingleServer().setAddress(url).setDatabase(props.getDb()).setUsername(props.getUsername())
+				.setPassword(props.getPassword());
 		RedissonClient client = Redisson.create(config);
 		return client;
 	}
