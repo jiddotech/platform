@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.PropertyPlaceholderHelper;
@@ -424,4 +425,7 @@ public final class CommonUtility {
 				ZonedDateTime.of(max, now.getZone()).toInstant());
 	}
 
+	public static Pageable getPageableWithDefaultSort(Pageable page) {
+		return PageRequest.of(page.getPageNumber(), page.getPageSize(), PlatformConstants.DEFAULT_SORT);
+	}
 }
