@@ -4,6 +4,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
+import org.springframework.data.domain.Sort;
+
 import com.jiddo.platform.exception.PlatformExceptionCodes;
 
 public class PlatformConstants {
@@ -40,4 +42,6 @@ public class PlatformConstants {
 	public static final String UNIQUE_ID_INFO = "unique_id_info";
 	public static final String COMPANY_NAME = "JIDDO";
 	public static final String EMPTY_STRING = "";
+	public static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "createdAt");
+
 }
