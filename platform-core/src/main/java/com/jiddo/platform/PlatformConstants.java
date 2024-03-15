@@ -42,6 +42,6 @@ public class PlatformConstants {
 	public static final String UNIQUE_ID_INFO = "unique_id_info";
 	public static final String COMPANY_NAME = "JIDDO";
 	public static final String EMPTY_STRING = "";
-	public static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "createdAt");
+	public static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "auditData.createdAt");
 
 }
