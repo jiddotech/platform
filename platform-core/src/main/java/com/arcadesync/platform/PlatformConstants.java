@@ -22,7 +22,7 @@ public class PlatformConstants {
 	public static final String SUCCESS = "success";
 	public static final String REQUEST_SUBMITTED = "request submitted";
 	public static final String X_TRACE_ID = "x-trace-id";
-	public static final String PARENT_PACKAGE = "com.jiddo";
+	public static final String PARENT_PACKAGE = "com.arcadesync";
 	public static final String QUEUE_CONFIGURATION_KEY_PATH = "rabbitmq.queues";
 	public static final String DEV_PROFILE = "dev";
 	public static final String QA_PROFILE = "qa";
@@ -40,7 +40,7 @@ public class PlatformConstants {
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = builder.parseCaseInsensitive()
 			.append(DateTimeFormatter.ISO_LOCAL_DATE_TIME).appendOffsetId().toFormatter();
 	public static final String UNIQUE_ID_INFO = "unique_id_info";
-	public static final String COMPANY_NAME = "JIDDO";
+	public static final String COMPANY_NAME = "ArcadeSync";
 	public static final String EMPTY_STRING = "";
 	public static final Sort DEFAULT_SORT = Sort.by(Sort.Direction.DESC, "auditData.createdAt");
 
