@@ -16,7 +16,7 @@
 	</properties>
 
 	<parent>
-		<groupId>com.jiddo</groupId>
+		<groupId>com.arcadesync</groupId>
 		<artifactId>platform-pom</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
