@@ -53,30 +53,33 @@ public abstract class ICacheCommonService {
 		return REFRESH_KEY_METHOD.keySet();
 	}
 	
-	public <K, V> V get(ICacheKey type, K entityId, Function<Set<K>, Map<K, V>> notFoundIdsResolver) {
-		if (ObjectUtils.isEmpty(entityId)) {
+	public <K, V> V get(ICacheKey type, K key, Function<Set<K>, Map<K, V>> notFoundKeysResolver) {
+		if (ObjectUtils.isEmpty(key)) {
 			return null;
 		}
-		return get(type, Collections.singleton(entityId), notFoundIdsResolver).get(entityId);
+		return get(type, Collections.singleton(key), notFoundKeysResolver).get(key);
 	}
 
-	public <K, V> Map<K, V> get(ICacheKey type, Set<K> entityIds, Function<Set<K>, Map<K, V>> notFoundIdsResolver) {
-		if (ObjectUtils.isEmpty(entityIds)) {
+	public <K, V> Map<K, V> get(ICacheKey type, Set<K> keys, Function<Set<K>, Map<K, V>> notFoundKeysResolver) {
+		if (ObjectUtils.isEmpty(keys)) {
 			return Collections.emptyMap();
 		}
-		entityIds.remove(null);
-		if (ObjectUtils.isEmpty(entityIds)) {
+		keys.remove(null);
+		if (ObjectUtils.isEmpty(keys)) {
 			return Collections.emptyMap();
 		}
 		RMap<K, V> ROLE_CACHE_MAP = redissonClient.getMap(type.getKey());
-		Map<K, V> response = ROLE_CACHE_MAP.getAll(entityIds);
-		Set<K> notFoundRoles = new HashSet<>();
-		for (K roleId : entityIds) {
-			if (!response.containsKey(roleId)) {
-				notFoundRoles.add(roleId);
+		Map<K, V> response = ROLE_CACHE_MAP.getAll(keys);
+		Set<K> notFoundKeys = new HashSet<>();
+		for (K key : keys) {
+			if (!response.containsKey(key)) {
+				notFoundKeys.add(key);
 			}
 		}
-		Map<K, V> dbRecords = notFoundIdsResolver.apply(notFoundRoles);
+		if (ObjectUtils.isEmpty(notFoundKeys)) {
+			return response;
+		}
+		Map<K, V> dbRecords = notFoundKeysResolver.apply(notFoundKeys);
 		ROLE_CACHE_MAP.putAllAsync(dbRecords);
 		response.putAll(dbRecords);
 		return response;
