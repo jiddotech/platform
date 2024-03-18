@@ -31,4 +31,11 @@ public class AuditData implements Serializable {
 		this.updatedBy = updatedBy;
 		this.updatedAt = Instant.now();
 	}
+
+	public AuditTimeDTO toAuditDateDTO() {
+		AuditTimeDTO auditDateDTO = new AuditTimeDTO();
+		auditDateDTO.setCreatedAt(this.createdAt);
+		auditDateDTO.setUpdatedAt(this.updatedAt);
+		return auditDateDTO;
+	}
 }
