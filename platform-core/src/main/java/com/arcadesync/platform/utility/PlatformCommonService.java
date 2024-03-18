@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.binary.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -28,17 +30,26 @@ import com.arcadesync.platform.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 public final class PlatformCommonService {
 
+	@Autowired
+	@Lazy
 	private ObjectMapper mapper;
+	
+	@Autowired
+	@Lazy
 	private RedissonClient redissonClient;
+	
+	@Autowired
+	@Lazy
 	private UrlConfig urlConfig;
+	
+	@Autowired
+	@Lazy
 	private UserClient userClient;
 
 	public ErrorField parseError(String errorResponse) {
