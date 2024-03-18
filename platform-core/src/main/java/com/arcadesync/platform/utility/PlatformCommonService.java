@@ -1,6 +1,9 @@
 package com.arcadesync.platform.utility;
 
 import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.StringUtils;
@@ -11,6 +14,10 @@ import org.springframework.util.ObjectUtils;
 
 import com.arcadesync.platform.PlatformConstants;
 import com.arcadesync.platform.clients.UrlConfig;
+import com.arcadesync.platform.clients.UserClient;
+import com.arcadesync.platform.dto.AuditDTO;
+import com.arcadesync.platform.dto.AuditData;
+import com.arcadesync.platform.dto.UserDetails;
 import com.arcadesync.platform.enums.ServiceContainerEnum;
 import com.arcadesync.platform.exception.ApplicationException;
 import com.arcadesync.platform.exception.AuthenticationException;
@@ -32,6 +39,7 @@ public final class PlatformCommonService {
 	private ObjectMapper mapper;
 	private RedissonClient redissonClient;
 	private UrlConfig urlConfig;
+	private UserClient userClient;
 
 	public ErrorField parseError(String errorResponse) {
 		try {
@@ -119,6 +127,19 @@ public final class PlatformCommonService {
 	public String getInternalCallUrl(ServiceContainerEnum container, String suffix) {
 		return MessageFormat.format("{0}/{1}/secure/internal-call{2}", urlConfig.getBaseUrl(),
 				container.getContextPath(), suffix);
+	}
+
+	public AuditDTO getAuditDTO(AuditData data) {
+		Set<String> userIds = new HashSet<>();
+		userIds.add(data.getCreatedBy());
+		userIds.add(data.getUpdatedBy());
+		Map<String, UserDetails> users = userClient.getUserById(userIds);
+		AuditDTO dto = new AuditDTO();
+		dto.setCreatedBy(users.get(data.getCreatedBy()));
+		dto.setUpdatedBy(users.get(data.getUpdatedBy()));
+		dto.setCreatedAt(data.getCreatedAt());
+		dto.setUpdatedAt(data.getUpdatedAt());
+		return dto;
 	}
 
 }
