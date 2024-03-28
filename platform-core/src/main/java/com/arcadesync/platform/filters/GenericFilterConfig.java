@@ -1,23 +1,12 @@
 package com.arcadesync.platform.filters;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.context.annotation.Configuration;
+public interface GenericFilterConfig {
+	public Set<String> getExcludedParams();
 
-import lombok.Getter;
-import lombok.Setter;
+	public Map<String, Set<String>> getFilterToBeServed();
 
-@Getter
-@Setter
-@RefreshScope
-@Configuration
-@ConfigurationProperties(prefix = "app.config.filter")
-public class GenericFilterConfig {
-	private Set<String> excludedParams;
-	private Map<String, Set<String>> filterToBeServed = new HashMap<>();
-	private Boolean failFast = false;
+	public Boolean getFailFast();
 }
