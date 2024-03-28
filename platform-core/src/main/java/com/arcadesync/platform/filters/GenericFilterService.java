@@ -9,14 +9,16 @@ import org.springframework.util.ObjectUtils;
 import com.arcadesync.platform.exception.PlatformExceptionCodes;
 import com.arcadesync.platform.exception.ValidationException;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class FilterService {
+@AllArgsConstructor
+public class GenericFilterService {
 
-	private DynamicFilterDataService dynamicFilterService;
+	private DynamicFilterService dynamicFilterService;
 
-	private StaticFilterDataService staticFilterService;
+	private StaticFilterService staticFilterService;
 
 	private GenericFilterConfig filterConfig;
 

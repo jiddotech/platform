@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class GenericFilterController {
 
-	private FilterService filterService;
+	private GenericFilterService filterService;
 
 	@GetMapping("/secure/filter/{key}")
 	public List<FilterDTO<Object>> getFiltersViaConfigKey(@PathVariable("key") String key) {
