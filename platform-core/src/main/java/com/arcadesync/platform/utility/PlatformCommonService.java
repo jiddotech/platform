@@ -4,10 +4,8 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.StringUtils;
-import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -24,9 +22,7 @@ import com.arcadesync.platform.enums.ServiceContainerEnum;
 import com.arcadesync.platform.exception.ApplicationException;
 import com.arcadesync.platform.exception.AuthenticationException;
 import com.arcadesync.platform.exception.ErrorField;
-import com.arcadesync.platform.exception.LoggerType;
 import com.arcadesync.platform.exception.PlatformExceptionCodes;
-import com.arcadesync.platform.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -84,37 +80,6 @@ public final class PlatformCommonService {
 		default:
 			break;
 		}
-	}
-
-	public RLock takeLock(String key, long leaseTimeInSeconds) {
-		return takeLock(key, leaseTimeInSeconds, "Request being processed, please wait...", LoggerType.ERROR);
-	}
-
-	public RLock takeLock(String key, long leaseTimeInSeconds, String errorMessage, LoggerType loggerType) {
-		RLock lock = redissonClient.getLock(key);
-		if (lock.isLocked()) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), errorMessage, loggerType);
-		}
-		lock.lock(leaseTimeInSeconds, TimeUnit.SECONDS);
-		return lock;
-	}
-
-	public void unlock(String key) {
-		RLock lock = redissonClient.getLock(key);
-		lock.unlock();
-	}
-
-	public void unlock(RLock lock) {
-		lock.unlock();
-	}
-
-	public void forceUnlock(String key) {
-		RLock lock = redissonClient.getLock(key);
-		lock.forceUnlock();
-	}
-
-	public void forceUnlock(RLock lock) {
-		lock.forceUnlock();
 	}
 
 	public String writeAsString(Object obj) {

@@ -1,5 +1,6 @@
 package com.arcadesync.platform.utility;
 
+import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ import org.springframework.util.ObjectUtils;
 import com.arcadesync.platform.exception.LoggerType;
 import com.arcadesync.platform.exception.PlatformExceptionCodes;
 import com.arcadesync.platform.exception.ValidationException;
+import com.arcadesync.platform.lock.LockService;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +30,7 @@ public class SequenceService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
-	private PlatformCommonService platformCommonService;
+	private LockService lockService;
 	private static final String BASE_SALT = "23456789abcdefghijkmnpqrstuvwxyz";
 	private static final Map<Long, Character> MAP_OF_INTEGER_TO_CHARACTER = new HashMap<>();
 
@@ -44,9 +46,13 @@ public class SequenceService {
 		}
 	}
 
-	public String getNextId(String basePath) {
+	public String getNextIdBaseATOZ(String basePath) {
 		Long val = getNextNumber(basePath);
 		return getString(val);
+	}
+
+	public String getNextId(String id) {
+		return getNextNumber(id).toString();
 	}
 
 	private Long getNextNumber(String id) {
@@ -61,8 +67,8 @@ public class SequenceService {
 			value = new SequenceEntity();
 			value.setId(id);
 			value.setValue(1L);
-			platformCommonService.takeLock("CREATE_NEW_KEY" + id, 1, "key generation failed try again after 2 seconds",
-					LoggerType.ERROR);
+			String key = MessageFormat.format("CREATE_NEW_KEY_{0}", id);
+			lockService.getLock(key, 1, "key generation failed try again after 2 seconds", LoggerType.ERROR);
 			mongoTemplate.save(value);
 		}
 		log.info("auto increment: {}", value);
