@@ -14,6 +14,7 @@ import java.util.function.BiFunction;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.codec.binary.StringUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
+@Service
 public final class FilterParserService {
 
 	private GenericFilterConfig filterConfig;
