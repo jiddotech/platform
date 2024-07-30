@@ -46,47 +46,6 @@ public class WalletClient {
 	@Autowired
 	private ObjectMapper mapper;
 
-	public WalletDTO getUserWalletDTO(String userId, String chargePointOperatorId) {
-		if (ObjectUtils.isEmpty(userId)) {
-			return null;
-		}
-		Set<String> userIdsSet = new HashSet<>();
-		userIdsSet.add(userId);
-		Map<String, WalletDTO> details = getUserWalletDTO(userIdsSet, chargePointOperatorId);
-		if (details.containsKey(userId)) {
-			return details.get(userId);
-		}
-		return null;
-	}
-
-	public Map<String, WalletDTO> getUserWalletDTO(Set<String> userId, String chargePointOperatorId) {
-		log.debug("fetchig wallet :{}", userId);
-		if (ObjectUtils.isEmpty(userId)) {
-			return Collections.emptyMap();
-		}
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("pw-service"));
-		MultipleUserWalletRequest requestData = new MultipleUserWalletRequest();
-		requestData.setUserIds(userId);
-		requestData.setChargePointOperatorId(chargePointOperatorId);
-		HttpEntity<MultipleUserWalletRequest> entity = new HttpEntity<>(requestData, headers);
-		try {
-			String url = MessageFormat.format("{0}/pw-service/secure/internal-call/user/wallet",
-					urlConfig.getBaseUrl());
-			log.debug("request for fetchig : {} body and headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
-			log.info("api response : {}", response.getBody());
-			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, WalletDTO>>() {
-			});
-		} catch (HttpStatusCodeException exeption) {
-			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"Unable to fetch the wallet info.");
-		}
-	}
-
 	public WalletDTO getWalletDTO(String walletId) {
 		if (ObjectUtils.isEmpty(walletId)) {
 			return null;
@@ -125,21 +84,14 @@ public class WalletClient {
 	}
 
 	@Data
-	private static class MultipleUserWalletRequest {
-		private Set<String> userIds;
-		private String chargePointOperatorId;
-	}
-
-	@Data
 	private static class WalletRequest {
 		private String userId;
 		private Long credits;
 		private String message;
 		private String createdBy;
-		private String chargePointOperatorId;
 	}
 
-	public WalletDTO createWallet() {
+	public WalletDTO createWallet(WalletOwnerDetails ownerDetails, String actionBy) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -162,6 +114,18 @@ public class WalletClient {
 	public static class WalletDTO {
 		private String walletId;
 		private Long credits;
+	}
+
+	@Data
+	private static class CreateWalletRequest {
+		private String actinBy;
+		private WalletOwnerDetails ownerDetails;
+	}
+
+	@Data
+	public static class WalletOwnerDetails {
+		private String type;
+		private String id;
 	}
 
 }
