@@ -19,6 +19,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.arcadesync.platform.PlatformConstants;
+import com.arcadesync.platform.enums.ServiceContainerEnum;
 import com.arcadesync.platform.exception.ApplicationException;
 import com.arcadesync.platform.exception.PlatformExceptionCodes;
 import com.arcadesync.platform.security.SecurityConfigProps;
@@ -45,6 +46,8 @@ public class WalletClient {
 
 	@Autowired
 	private ObjectMapper mapper;
+	
+	private static final ServiceContainerEnum container = ServiceContainerEnum.PAYMENT_SERVICE;
 
 	public WalletDTO getWalletDTO(String walletId) {
 		if (ObjectUtils.isEmpty(walletId)) {
@@ -67,7 +70,7 @@ public class WalletClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("pw-service"));
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get(container));
 		HttpEntity<Set<String>> entity = new HttpEntity<>(walletId, headers);
 		try {
 			String url = MessageFormat.format("{0}/pw-service/secure/internal-call/wallet", urlConfig.getBaseUrl());
@@ -95,7 +98,7 @@ public class WalletClient {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("pw-service"));
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get(container));
 		HttpEntity<WalletRequest> entity = new HttpEntity<>(null, headers);
 		try {
 			String url = MessageFormat.format("{0}/pw-service/secure/internal-call/wallet", urlConfig.getBaseUrl());
@@ -118,7 +121,7 @@ public class WalletClient {
 
 	@Data
 	private static class CreateWalletRequest {
-		private String actinBy;
+		private String actionBy;
 		private WalletOwnerDetails ownerDetails;
 	}
 
