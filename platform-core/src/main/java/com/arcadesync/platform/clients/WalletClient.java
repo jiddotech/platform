@@ -73,7 +73,7 @@ public class WalletClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get(container));
 		HttpEntity<Set<String>> entity = new HttpEntity<>(walletId, headers);
 		try {
-			String url = MessageFormat.format("{0}/pw-service/secure/internal-call/wallet", urlConfig.getBaseUrl());
+			String url = MessageFormat.format("{0}/payment-svc/secure/internal-call/wallet", urlConfig.getBaseUrl());
 			log.debug("request for fetchig : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			log.info("api response : {}", response.getBody());
@@ -101,7 +101,7 @@ public class WalletClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get(container));
 		HttpEntity<WalletRequest> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/pw-service/secure/internal-call/wallet", urlConfig.getBaseUrl());
+			String url = MessageFormat.format("{0}/payment-svc/secure/internal-call/wallet", urlConfig.getBaseUrl());
 			log.debug("request for creating wallet : {} body and headers {}", url, entity);
 			ResponseEntity<WalletDTO> response = template.exchange(url, HttpMethod.POST, entity, WalletDTO.class);
 			log.info("api response : {}", response.getBody());
