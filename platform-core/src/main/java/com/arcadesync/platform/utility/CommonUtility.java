@@ -34,6 +34,8 @@ import org.springframework.util.PropertyPlaceholderHelper;
 import com.arcadesync.platform.PlatformConstants;
 import com.arcadesync.platform.dto.CodeValueDTO;
 import com.arcadesync.platform.dto.GeoCoordinatesDTO;
+import com.arcadesync.platform.dto.Image;
+import com.arcadesync.platform.dto.ImageUploadDTO;
 import com.arcadesync.platform.dto.Range;
 import com.arcadesync.platform.dto.SaveTagRequest;
 import com.arcadesync.platform.exception.ApplicationException;
@@ -416,5 +418,12 @@ public final class CommonUtility {
 
 	public static Pageable getPageableWithDefaultSort(Pageable page) {
 		return PageRequest.of(page.getPageNumber(), page.getPageSize(), PlatformConstants.DEFAULT_SORT);
+	}
+	
+	public static Image getImage(ImageUploadDTO uploadDto) {
+		Image img = new Image();
+		img.setName(uploadDto.getName());
+		img.setRelativePath(uploadDto.getRelativePath());
+		return img;
 	}
 }
