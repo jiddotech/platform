@@ -1,6 +1,5 @@
 package com.arcadesync.platform.clients;
 
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,6 +22,7 @@ import com.arcadesync.platform.enums.ServiceContainerEnum;
 import com.arcadesync.platform.exception.ApplicationException;
 import com.arcadesync.platform.exception.PlatformExceptionCodes;
 import com.arcadesync.platform.security.SecurityConfigProps;
+import com.arcadesync.platform.utility.PlatformCommonService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +46,10 @@ public class WalletClient {
 
 	@Autowired
 	private ObjectMapper mapper;
-	
+
+	@Autowired
+	private PlatformCommonService platformCommonService;
+
 	private static final ServiceContainerEnum container = ServiceContainerEnum.PAYMENT_SERVICE;
 
 	public WalletDTO getWalletDTO(String walletId) {
@@ -73,7 +76,7 @@ public class WalletClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get(container));
 		HttpEntity<Set<String>> entity = new HttpEntity<>(walletId, headers);
 		try {
-			String url = MessageFormat.format("{0}/payment-svc/secure/internal-call/wallet", urlConfig.getBaseUrl());
+			String url = platformCommonService.getInternalCallUrl(container, "/wallet");
 			log.debug("request for fetchig : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			log.info("api response : {}", response.getBody());
@@ -86,22 +89,17 @@ public class WalletClient {
 		}
 	}
 
-	@Data
-	private static class WalletRequest {
-		private String userId;
-		private Long credits;
-		private String message;
-		private String createdBy;
-	}
-
 	public WalletDTO createWallet(WalletOwnerDetails ownerDetails, String actionBy) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get(container));
-		HttpEntity<WalletRequest> entity = new HttpEntity<>(null, headers);
+		CreateWalletRequest request = new CreateWalletRequest();
+		request.setOwnerDetails(ownerDetails);
+		request.setActionBy(actionBy);
+		HttpEntity<CreateWalletRequest> entity = new HttpEntity<>(request, headers);
 		try {
-			String url = MessageFormat.format("{0}/payment-svc/secure/internal-call/wallet", urlConfig.getBaseUrl());
+			String url = platformCommonService.getInternalCallUrl(container, "/wallet");
 			log.debug("request for creating wallet : {} body and headers {}", url, entity);
 			ResponseEntity<WalletDTO> response = template.exchange(url, HttpMethod.POST, entity, WalletDTO.class);
 			log.info("api response : {}", response.getBody());
