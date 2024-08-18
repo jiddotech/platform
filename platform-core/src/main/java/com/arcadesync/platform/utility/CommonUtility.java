@@ -34,7 +34,6 @@ import org.springframework.util.PropertyPlaceholderHelper;
 import com.arcadesync.platform.PlatformConstants;
 import com.arcadesync.platform.dto.CodeValueDTO;
 import com.arcadesync.platform.dto.GeoCoordinatesDTO;
-import com.arcadesync.platform.dto.Image;
 import com.arcadesync.platform.dto.Range;
 import com.arcadesync.platform.dto.SaveTagRequest;
 import com.arcadesync.platform.exception.ApplicationException;
@@ -196,16 +195,6 @@ public final class CommonUtility {
 
 	public static String getKey(String first, String second) {
 		return MessageFormat.format("{0}###{1}", first, second);
-	}
-
-	public static Image getDefaultImage(List<Image> images) {
-		if (ObjectUtils.isEmpty(images)) {
-			Image image = new Image();
-			image.setName("Charzer Image");
-			image.setRelativePath("static/default_charger_img.jpg");
-			return new Image();
-		}
-		return images.get(0);
 	}
 
 	public static String getDate(Instant instant) {
