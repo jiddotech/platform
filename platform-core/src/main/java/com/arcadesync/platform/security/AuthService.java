@@ -23,10 +23,12 @@ import org.springframework.web.client.RestTemplate;
 import com.arcadesync.platform.PlatformConstants;
 import com.arcadesync.platform.clients.UrlConfig;
 import com.arcadesync.platform.enums.LogInFrom;
+import com.arcadesync.platform.enums.ServiceContainerEnum;
 import com.arcadesync.platform.exception.ApplicationException;
 import com.arcadesync.platform.exception.AuthenticationException;
 import com.arcadesync.platform.exception.PlatformExceptionCodes;
 import com.arcadesync.platform.utility.CommonUtility;
+import com.arcadesync.platform.utility.PlatformCommonService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,9 +50,6 @@ public class AuthService {
 	@Autowired
 	private SecurityConfigProps props;
 
-	@Autowired
-	private UrlConfig urlConfig;
-
 	private String secretKey;
 
 	@Autowired
@@ -58,6 +57,11 @@ public class AuthService {
 
 	@Autowired
 	private ObjectMapper mapper;
+
+	@Autowired
+	private PlatformCommonService platformCommonService;
+
+	private static final ServiceContainerEnum SERVICE = ServiceContainerEnum.USER_SERVICE;
 
 	@PostConstruct
 	protected void init() {
@@ -87,10 +91,11 @@ public class AuthService {
 	private LoggedInUser validateClientToken(String token) throws ApplicationException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, props.getCreds().get(SERVICE));
 		TokenRequest requets = new TokenRequest(token);
 		HttpEntity<TokenRequest> entity = new HttpEntity<>(requets, headers);
 		try {
-			String url = MessageFormat.format("{0}/auth-svc/validate-token/", urlConfig.getBaseUrl());
+			String url = platformCommonService.getInternalCallUrl(SERVICE, "/validate-token");
 			log.trace("url: {} token request : {} headers : {}", url, requets, headers);
 			HttpEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
 			log.trace("response from the server : {}", response.getBody());
