@@ -35,15 +35,15 @@ public final class PlatformCommonService {
 	@Autowired
 	@Lazy
 	private ObjectMapper mapper;
-	
+
 	@Autowired
 	@Lazy
 	private RedissonClient redissonClient;
-	
+
 	@Autowired
 	@Lazy
 	private UrlConfig urlConfig;
-	
+
 	@Autowired
 	@Lazy
 	private UserClient userClient;
@@ -110,6 +110,18 @@ public final class PlatformCommonService {
 		userIds.add(data.getCreatedBy());
 		userIds.add(data.getUpdatedBy());
 		Map<String, UserDetails> users = userClient.getUserById(userIds);
+		AuditDTO dto = new AuditDTO();
+		dto.setCreatedBy(users.get(data.getCreatedBy()));
+		dto.setUpdatedBy(users.get(data.getUpdatedBy()));
+		dto.setCreatedAt(data.getCreatedAt());
+		dto.setUpdatedAt(data.getUpdatedAt());
+		return dto;
+	}
+
+	public AuditDTO getAuditDTO(AuditData data, Map<String, UserDetails> users) {
+		Set<String> userIds = new HashSet<>();
+		userIds.add(data.getCreatedBy());
+		userIds.add(data.getUpdatedBy());
 		AuditDTO dto = new AuditDTO();
 		dto.setCreatedBy(users.get(data.getCreatedBy()));
 		dto.setUpdatedBy(users.get(data.getUpdatedBy()));
