@@ -61,7 +61,7 @@ public class AuthService {
 	@Autowired
 	private PlatformCommonService platformCommonService;
 
-	private static final ServiceContainerEnum SERVICE = ServiceContainerEnum.USER_SERVICE;
+	private static final ServiceContainerEnum SERVICE = ServiceContainerEnum.AUTH_SERVICE;
 
 	@PostConstruct
 	protected void init() {
