@@ -1,6 +1,5 @@
 package com.arcadesync.platform.security;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -10,6 +9,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,7 +21,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.arcadesync.platform.PlatformConstants;
-import com.arcadesync.platform.clients.UrlConfig;
 import com.arcadesync.platform.enums.LogInFrom;
 import com.arcadesync.platform.enums.ServiceContainerEnum;
 import com.arcadesync.platform.exception.ApplicationException;
@@ -53,6 +52,7 @@ public class AuthService {
 	private String secretKey;
 
 	@Autowired
+	@Qualifier(PlatformConstants.EXTERNAL_SLOW_CLIENT)
 	private RestTemplate template;
 
 	@Autowired
