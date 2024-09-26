@@ -1,6 +1,5 @@
 package com.arcadesync.platform.clients;
 
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
