@@ -11,7 +11,7 @@ public enum ServiceContainerEnum {
 	TICKET_SERVICE("ticket"), HARDWARE_SERVICE("hardware-svc"), ASSET_SERVICE("asset-svc"), GAME_SERVICE("game-svc"),
 	CAFE_SERVICE("cafe-svc"), GAMER_SERVICE("gamer-svc"), PROMOTION_SERVICE("promotion-svc"),
 	PAYMENT_SERVICE("payment-svc"), COMMON_SERVICE("common-svc"), NOTIFICATION_SERVICE("notification-svc"),
-	UD_SERVICE("ud-svc");
+	UD_SERVICE("ud-svc"), TRACKER_SERVICE("tracker-svc");
 
 	private String contextPath;
 
