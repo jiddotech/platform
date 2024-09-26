@@ -13,12 +13,8 @@ import lombok.Data;
 @ConfigurationProperties(prefix = PlatformConstants.QUEUE_CONFIGURATION_KEY_PATH)
 public class GenericRabbitQueueConfiguration {
 	private QueueConfiguration sendNotification;
-	private QueueConfiguration updateDailyTracker;
+	private QueueConfiguration updateTracker;
 	private QueueConfiguration entityAuditing;
-	private QueueConfiguration initiateOutboundCall;
-	private QueueConfiguration startBookingQueueV2;
-	private QueueConfiguration stopBookingQueueV2;
 	private QueueConfiguration pdfGenerationAndUpload;
-	private QueueConfiguration raiseBookingUtilizationAnomalyTicket;
 	private QueueConfiguration httpScheduleTask;
 }
