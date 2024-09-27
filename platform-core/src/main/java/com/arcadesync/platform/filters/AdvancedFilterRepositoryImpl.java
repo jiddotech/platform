@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -67,18 +68,7 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 
 	@Override
 	public List<T> filter(List<AbstractFilter> filters, String[] includedFields, Class<T> clazz) {
-		GenericFilterToQueryCreator queryMapper = getQueryMapper(clazz);
-		Criteria criterias = queryMapper.getFilter(filters);
-		Query query = new Query();
-		if (!ObjectUtils.isEmpty(criterias)) {
-			query.addCriteria(criterias);
-		}
-		if (!ObjectUtils.isEmpty(includedFields)) {
-			query.fields().include(includedFields);
-		}
-		log.debug("query: {} class : {}", query, clazz);
-		// mongo does not support count on geo spatial query
-		return mongoTemplate.find(query, clazz);
+		return this.filter(filters, includedFields, null, clazz);
 	}
 
 	private void validateFilters(List<AbstractFilter> filters) {
@@ -155,5 +145,29 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 		response.setOffset(offset);
 		response.setTotalCount(count);
 		return response;
+	}
+
+	@Override
+	public List<T> filter(List<AbstractFilter> filters, String[] includedFields, Sort sort, Class<T> clazz) {
+		GenericFilterToQueryCreator queryMapper = getQueryMapper(clazz);
+		Criteria criterias = queryMapper.getFilter(filters);
+		Query query = new Query();
+		if (!ObjectUtils.isEmpty(criterias)) {
+			query.addCriteria(criterias);
+		}
+		if (!ObjectUtils.isEmpty(includedFields)) {
+			query.fields().include(includedFields);
+		}
+		if (!ObjectUtils.isEmpty(sort)) {
+			query.with(sort);
+		}
+		log.debug("query: {} class : {}", query, clazz);
+		// mongo does not support count on geo spatial query
+		return mongoTemplate.find(query, clazz);
+	}
+
+	@Override
+	public List<T> filter(List<AbstractFilter> filters, Sort sort, Class<T> clazz) {
+		return this.filter(filters, new String[0], sort, clazz);
 	}
 }

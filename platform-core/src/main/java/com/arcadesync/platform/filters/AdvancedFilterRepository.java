@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 public interface AdvancedFilterRepository<T> {
 
@@ -14,7 +15,11 @@ public interface AdvancedFilterRepository<T> {
 
 	List<T> filter(List<AbstractFilter> filters, String[] includedFields, Class<T> clazz);
 
+	List<T> filter(List<AbstractFilter> filters, String[] includedFields, Sort sort, Class<T> clazz);
+
 	List<T> filter(List<AbstractFilter> filters, Class<T> clazz);
+
+	List<T> filter(List<AbstractFilter> filters, Sort sort, Class<T> clazz);
 
 	CustomPageResponse<T> filter(List<AbstractFilter> filter, int limit, long offset, Class<T> clazz);
 
